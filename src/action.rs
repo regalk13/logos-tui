@@ -12,4 +12,6 @@ pub enum Action {
     ClearScreen,
     Error(String),
     Help,
+    OpenPassage { book: String, chapter: u16 },
+    Scroll(i16),
 }

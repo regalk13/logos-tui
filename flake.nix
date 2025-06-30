@@ -1,5 +1,5 @@
 {
-  description = "Ratatui app built with crane";
+  description = "Flake for Logos-TUI";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -27,8 +27,8 @@
           inherit src;
         };
 
-        bible-tui = craneLib.buildPackage {
-          pname = "bible-tui";
+        logos-tui = craneLib.buildPackage {
+          pname = "logos-tui";
           version = "0.1.0";
           inherit src cargoArtifacts;
 
@@ -38,17 +38,17 @@
           doCheck = false;
         };
       in {
-        packages.default = bible-tui;
+        packages.default = logos-tui;
 
         apps.default = flake-utils.lib.mkApp {
-          drv = bible-tui;
+          drv = logos-tui;
         };
 
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ bible-tui ];
+          inputsFrom = [ logos-tui ];
           nativeBuildInputs = with pkgs; [
             pkg-config
-            cargo # or craneLib.rustc / craneLib.cargo if you want pinned toolchain
+            cargo
             rust-analyzer
             cargo-generate
           ];

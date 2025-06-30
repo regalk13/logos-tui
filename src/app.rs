@@ -1,13 +1,14 @@
 use color_eyre::Result;
 use crossterm::event::KeyEvent;
-use ratatui::prelude::Rect;
+use ratatui::prelude::{Constraint, Rect};
 use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 use tracing::{debug, info};
 
 use crate::{
     action::Action,
-    components::{Component, fps::FpsCounter, home::Home},
+    bible::Bible,
+    components::{Component, fps::FpsCounter, index::Index, reader::Reader},
     config::Config,
     tui::{Event, Tui},
 };
@@ -33,11 +34,16 @@ pub enum Mode {
 
 impl App {
     pub fn new(tick_rate: f64, frame_rate: f64) -> Result<Self> {
+        let bible = Bible::load_tsv("books/kjv.tsv")?;
         let (action_tx, action_rx) = mpsc::unbounded_channel();
         Ok(Self {
             tick_rate,
             frame_rate,
-            components: vec![Box::new(Home::new()), Box::new(FpsCounter::default())],
+            components: vec![
+                Box::new(Index::new(bible.clone())),
+                Box::new(Reader::new(bible.clone())),
+                Box::new(FpsCounter::default()),
+            ],
             should_quit: false,
             should_suspend: false,
             config: Config::new()?,
@@ -50,7 +56,6 @@ impl App {
 
     pub async fn run(&mut self) -> Result<()> {
         let mut tui = Tui::new()?
-            // .mouse(true) // uncomment this line to enable mouse support
             .tick_rate(self.tick_rate)
             .frame_rate(self.frame_rate);
         tui.enter()?;
@@ -116,11 +121,8 @@ impl App {
                 action_tx.send(action.clone())?;
             }
             _ => {
-                // If the key was not handled as a single key action,
-                // then consider it for multi-key combinations.
                 self.last_tick_key_events.push(key);
 
-                // Check for multi-key combinations
                 if let Some(action) = keymap.get(&self.last_tick_key_events) {
                     info!("Got action: {action:?}");
                     action_tx.send(action.clone())?;
@@ -164,12 +166,21 @@ impl App {
 
     fn render(&mut self, tui: &mut Tui) -> Result<()> {
         tui.draw(|frame| {
+            let [left, right] = ratatui::layout::Layout::horizontal([
+                Constraint::Percentage(25),
+                Constraint::Percentage(75),
+            ])
+            .areas(frame.area());
+
             for component in self.components.iter_mut() {
-                if let Err(err) = component.draw(frame, frame.area()) {
-                    let _ = self
-                        .action_tx
-                        .send(Action::Error(format!("Failed to draw: {:?}", err)));
-                }
+                let area = if component.as_any().is::<Index>() {
+                    left
+                } else if component.as_any().is::<Reader>() {
+                    right
+                } else {
+                    frame.area()
+                };
+                let _ = component.draw(frame, area);
             }
         })?;
         Ok(())
