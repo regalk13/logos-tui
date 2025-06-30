@@ -3,7 +3,7 @@ name = "logos-tui"
 version = "0.1.0"
 edition = "2024"
 description = "Read the holy bible on your terminal"
-authors = ["Regalk <72028266+regalk13@users.noreply.github.com>"]
+authors = ["regalk"]
 build = "build.rs"
 
 
