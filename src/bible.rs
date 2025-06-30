@@ -52,13 +52,7 @@ impl Bible {
         Ok(Self { verses: out })
     }
 
-    fn make_verse(
-        book: &str,
-        ch: &str,
-        vs: &str,
-        txt: &str,
-        ln: usize,
-    ) -> Result<Verse> {
+    fn make_verse(book: &str, ch: &str, vs: &str, txt: &str, ln: usize) -> Result<Verse> {
         Ok(Verse {
             book: book.to_owned(),
             chapter: ch
