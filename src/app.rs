@@ -24,12 +24,19 @@ pub struct App {
     last_tick_key_events: Vec<KeyEvent>,
     action_tx: mpsc::UnboundedSender<Action>,
     action_rx: mpsc::UnboundedReceiver<Action>,
+    focus: Focus,
 }
 
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Mode {
     #[default]
     Home,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum Focus {
+    Index,
+    Reader,
 }
 
 impl App {
@@ -51,6 +58,7 @@ impl App {
             last_tick_key_events: Vec::new(),
             action_tx,
             action_rx,
+            focus: Focus::Index,
         })
     }
 
@@ -103,8 +111,14 @@ impl App {
             _ => {}
         }
         for component in self.components.iter_mut() {
-            if let Some(action) = component.handle_events(Some(event.clone()))? {
-                action_tx.send(action)?;
+            let owns_focus = (self.focus == Focus::Index && component.as_any().is::<Index>())
+                || (self.focus == Focus::Reader && component.as_any().is::<Reader>());
+
+            if owns_focus {
+                if let Some(action) = component.handle_events(Some(event.clone()))? {
+                    action_tx.send(action)?;
+                }
+                break;
             }
         }
         Ok(())
@@ -147,6 +161,13 @@ impl App {
                 Action::ClearScreen => tui.terminal.clear()?,
                 Action::Resize(w, h) => self.handle_resize(tui, w, h)?,
                 Action::Render => self.render(tui)?,
+                Action::ChangeFocus => {
+                    self.focus = match self.focus {
+                        Focus::Index => Focus::Reader,
+                        Focus::Reader => Focus::Index,
+                        // ...
+                    }
+                }
                 _ => {}
             }
             for component in self.components.iter_mut() {
@@ -180,7 +201,7 @@ impl App {
                 } else {
                     frame.area()
                 };
-                let _ = component.draw(frame, area);
+                let _ = component.draw(frame, area, self.focus);
             }
         })?;
         Ok(())

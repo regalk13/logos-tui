@@ -6,7 +6,7 @@ use ratatui::{
 };
 use tokio::sync::mpsc::UnboundedSender;
 
-use crate::{action::Action, config::Config, tui::Event};
+use crate::{action::Action, app::Focus, config::Config, tui::Event};
 
 pub mod fps;
 pub mod index;
@@ -131,5 +131,5 @@ pub trait Component: AsAny {
     /// # Returns
     ///
     /// * `Result<()>` - An Ok result or an error.
-    fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()>;
+    fn draw(&mut self, frame: &mut Frame, area: Rect, focus: Focus) -> Result<()>;
 }

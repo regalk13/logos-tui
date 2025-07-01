@@ -14,4 +14,5 @@ pub enum Action {
     Help,
     OpenPassage { book: String, chapter: u16 },
     Scroll(i16),
+    ChangeFocus,
 }

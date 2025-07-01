@@ -1,7 +1,7 @@
 use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 
-use crate::{action::Action, bible::Bible, components::Component};
+use crate::{action::Action, app::Focus, bible::Bible, components::Component};
 
 pub struct Reader {
     bible: Bible,
@@ -42,18 +42,25 @@ impl Component for Reader {
             _ => Ok(None),
         }
     }
-    fn draw(&mut self, f: &mut Frame, area: Rect) -> Result<()> {
+    fn draw(&mut self, f: &mut Frame, area: Rect, focus: Focus) -> Result<()> {
         let verses = self.bible.passage(&self.book, self.chapter);
         let text: Vec<Line> = verses
             .iter()
             .map(|v| Line::from(format!("{} {}:{} {}", v.book, v.chapter, v.verse, v.text)))
             .collect();
 
+        let border_style = if focus == Focus::Reader {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        };
+
         let para = Paragraph::new(text)
             .block(
                 Block::default()
                     .title(format!("{} {}", self.book, self.chapter))
-                    .borders(Borders::ALL),
+                    .borders(Borders::ALL)
+                    .border_style(border_style),
             )
             .scroll((self.scroll, 0))
             .wrap(Wrap { trim: true });
