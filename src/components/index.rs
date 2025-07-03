@@ -11,6 +11,7 @@ pub struct Index {
     list_state: ListState,
     mode: Mode,
     action_tx: Option<UnboundedSender<Action>>,
+    current_filter: String,
 }
 
 enum Mode {
@@ -31,6 +32,7 @@ impl Index {
             list_state,
             mode: Mode::Normal,
             action_tx: None,
+            current_filter: String::new(),
         }
     }
     fn send_select(&self) -> Result<()> {
@@ -45,6 +47,7 @@ impl Index {
     }
 
     fn apply_filter(&mut self, query: &str) {
+        self.current_filter = query.to_string();
         if query.is_empty() {
             self.items = self.all_items.clone();
         } else {
@@ -52,7 +55,10 @@ impl Index {
             self.items = self
                 .all_items
                 .iter()
-                .filter(|(b, _)| b.to_ascii_lowercase().contains(&q))
+                .filter(|(b, c)| {
+                    let combined = format!("{} {}", b, c).to_ascii_lowercase();
+                    combined.contains(&q)
+                })
                 .cloned()
                 .collect();
         }
@@ -73,7 +79,7 @@ impl Component for Index {
             Mode::Normal => match key.code {
                 Char('/') => {
                     self.mode = Mode::Filtering {
-                        query: String::new(),
+                        query: String::from(self.current_filter.clone()),
                     };
                 }
                 Up | Char('k') => {

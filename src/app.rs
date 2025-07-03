@@ -25,6 +25,7 @@ pub struct App {
     action_tx: mpsc::UnboundedSender<Action>,
     action_rx: mpsc::UnboundedReceiver<Action>,
     focus: Focus,
+    filtering_mode: bool,
 }
 
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -59,6 +60,7 @@ impl App {
             action_tx,
             action_rx,
             focus: Focus::Index,
+            filtering_mode: false,
         })
     }
 
@@ -125,7 +127,21 @@ impl App {
     }
 
     fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
+        use crossterm::event::KeyCode;
         let action_tx = self.action_tx.clone();
+
+        if self.filtering_mode {
+            match key.code {
+                KeyCode::Esc | KeyCode::Enter => {
+                    self.filtering_mode = false;
+                }
+                _ => {
+                    return Ok(());
+                }
+            }
+            return Ok(());
+        }
+
         let Some(keymap) = self.config.keybindings.get(&self.mode) else {
             return Ok(());
         };
@@ -158,6 +174,11 @@ impl App {
                 Action::Quit => self.should_quit = true,
                 Action::Suspend => self.should_suspend = true,
                 Action::Resume => self.should_suspend = false,
+                Action::Filter => {
+                    if self.focus == Focus::Index {
+                        self.filtering_mode = true;
+                    }
+                }
                 Action::ClearScreen => tui.terminal.clear()?,
                 Action::Resize(w, h) => self.handle_resize(tui, w, h)?,
                 Action::Render => self.render(tui)?,

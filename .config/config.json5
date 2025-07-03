@@ -6,6 +6,7 @@
       "<Ctrl-c>": "Quit", // Yet another way to quit
       "<Ctrl-z>": "Suspend", // Suspend the application
       "<tab>":  "ChangeFocus",
+      "/": "Filter"
     },
   }
 }
