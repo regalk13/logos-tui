@@ -56,7 +56,7 @@ impl Index {
                 .all_items
                 .iter()
                 .filter(|(b, c)| {
-                    let combined = format!("{} {}", b, c).to_ascii_lowercase();
+                    let combined = format!("{b} {c}").to_ascii_lowercase();
                     combined.contains(&q)
                 })
                 .cloned()
@@ -79,7 +79,7 @@ impl Component for Index {
             Mode::Normal => match key.code {
                 Char('/') => {
                     self.mode = Mode::Filtering {
-                        query: String::from(self.current_filter.clone()),
+                        query: self.current_filter.clone(),
                     };
                 }
                 Up | Char('k') => {
