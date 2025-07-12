@@ -16,4 +16,8 @@ pub enum Action {
     Scroll(i16),
     ChangeFocus,
     Filter,
+    MoveRow(i32),
+    MoveCol(i32),
+    Yank,
+    ToggleVisual,
 }
