@@ -1,28 +1,22 @@
 #![allow(dead_code)] // Remove this once you start using the code
 
-use std::{
-    io::{Stdout, stdout},
-    ops::{Deref, DerefMut},
-    time::Duration,
-};
+use std::io::{Stdout, stdout};
+use std::ops::{Deref, DerefMut};
+use std::time::Duration;
 
 use color_eyre::Result;
-use crossterm::{
-    cursor,
-    event::{
-        DisableBracketedPaste, DisableMouseCapture, EnableBracketedPaste, EnableMouseCapture,
-        Event as CrosstermEvent, EventStream, KeyEvent, KeyEventKind, MouseEvent,
-    },
-    terminal::{EnterAlternateScreen, LeaveAlternateScreen},
+use crossterm::cursor;
+use crossterm::event::{
+    DisableBracketedPaste, DisableMouseCapture, EnableBracketedPaste, EnableMouseCapture,
+    Event as CrosstermEvent, EventStream, KeyEvent, KeyEventKind, MouseEvent,
 };
+use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use futures::{FutureExt, StreamExt};
 use ratatui::backend::CrosstermBackend as Backend;
 use serde::{Deserialize, Serialize};
-use tokio::{
-    sync::mpsc::{self, UnboundedReceiver, UnboundedSender},
-    task::JoinHandle,
-    time::interval,
-};
+use tokio::sync::mpsc::{self, UnboundedReceiver, UnboundedSender};
+use tokio::task::JoinHandle;
+use tokio::time::interval;
 use tokio_util::sync::CancellationToken;
 use tracing::error;
 

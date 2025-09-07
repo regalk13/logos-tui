@@ -5,13 +5,14 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 use tracing::{debug, info};
 
-use crate::{
-    action::Action,
-    bible::Bible,
-    components::{Component, fps::FpsCounter, index::Index, reader::Reader},
-    config::Config,
-    tui::{Event, Tui},
-};
+use crate::action::Action;
+use crate::bible::Bible;
+use crate::components::Component;
+use crate::components::fps::FpsCounter;
+use crate::components::index::Index;
+use crate::components::reader::Reader;
+use crate::config::Config;
+use crate::tui::{Event, Tui};
 
 pub struct App {
     config: Config,

@@ -1,12 +1,13 @@
 use color_eyre::Result;
 use crossterm::event::{KeyEvent, MouseEvent};
-use ratatui::{
-    Frame,
-    layout::{Rect, Size},
-};
+use ratatui::Frame;
+use ratatui::layout::{Rect, Size};
 use tokio::sync::mpsc::UnboundedSender;
 
-use crate::{action::Action, app::Focus, config::Config, tui::Event};
+use crate::action::Action;
+use crate::app::Focus;
+use crate::config::Config;
+use crate::tui::Event;
 
 pub mod fps;
 pub mod index;
@@ -21,12 +22,15 @@ impl<T: Component + 'static> AsAny for T {
     }
 }
 
-/// `Component` is a trait that represents a visual and interactive element of the user interface.
+/// `Component` is a trait that represents a visual and interactive element of
+/// the user interface.
 ///
-/// Implementors of this trait can be registered with the main application loop and will be able to
-/// receive events, update state, and be rendered on the screen.
+/// Implementors of this trait can be registered with the main application loop
+/// and will be able to receive events, update state, and be rendered on the
+/// screen.
 pub trait Component: AsAny {
-    /// Register an action handler that can send actions for processing if necessary.
+    /// Register an action handler that can send actions for processing if
+    /// necessary.
     ///
     /// # Arguments
     ///
@@ -39,7 +43,8 @@ pub trait Component: AsAny {
         let _ = tx; // to appease clippy
         Ok(())
     }
-    /// Register a configuration handler that provides configuration settings if necessary.
+    /// Register a configuration handler that provides configuration settings if
+    /// necessary.
     ///
     /// # Arguments
     ///

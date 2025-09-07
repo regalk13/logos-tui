@@ -1,18 +1,14 @@
 use std::time::Instant;
 
 use color_eyre::Result;
-use ratatui::{
-    Frame,
-    layout::{Constraint, Layout, Rect},
-    style::{Style, Stylize},
-    text::Span,
-    widgets::Paragraph,
-};
+use ratatui::Frame;
+use ratatui::layout::{Constraint, Layout, Rect};
+use ratatui::style::{Style, Stylize};
+use ratatui::text::Span;
+use ratatui::widgets::Paragraph;
 
 use super::Component;
-
 use crate::action::Action;
-
 use crate::app::Focus;
 
 #[derive(Debug, Clone, PartialEq)]

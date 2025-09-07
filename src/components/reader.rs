@@ -1,8 +1,12 @@
-use color_eyre::Result;
-use ratatui::{prelude::*, widgets::*};
-
-use crate::{action::Action, app::Focus, bible::Bible, components::Component};
 use arboard::Clipboard;
+use color_eyre::Result;
+use ratatui::prelude::*;
+use ratatui::widgets::*;
+
+use crate::action::Action;
+use crate::app::Focus;
+use crate::bible::Bible;
+use crate::components::Component;
 
 pub struct Reader {
     bible: Bible,

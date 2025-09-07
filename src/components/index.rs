@@ -1,8 +1,12 @@
 use color_eyre::Result;
-use ratatui::{prelude::*, widgets::*};
+use ratatui::prelude::*;
+use ratatui::widgets::*;
 use tokio::sync::mpsc::UnboundedSender;
 
-use crate::{action::Action, app::Focus, bible::Bible, components::Component};
+use crate::action::Action;
+use crate::app::Focus;
+use crate::bible::Bible;
+use crate::components::Component;
 
 pub struct Index {
     all_items: Vec<(String, u16)>,

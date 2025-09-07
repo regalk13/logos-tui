@@ -1,12 +1,9 @@
-use color_eyre::{
-    Result,
-    eyre::{WrapErr, eyre},
-};
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    path::Path,
-};
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::path::Path;
+
+use color_eyre::Result;
+use color_eyre::eyre::{WrapErr, eyre};
 
 #[derive(Clone)]
 pub struct Verse {
