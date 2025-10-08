@@ -210,8 +210,8 @@ impl App {
     fn render(&mut self, tui: &mut Tui) -> Result<()> {
         tui.draw(|frame| {
             let [left, right] = ratatui::layout::Layout::horizontal([
-                Constraint::Percentage(25),
-                Constraint::Percentage(75),
+                Constraint::Percentage(20),
+                Constraint::Percentage(80),
             ])
             .areas(frame.area());
 
